@@ -1,24 +1,14 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Build a notes application in Rails that philosophically replicates a file system
 
-Things you may want to cover:
+Notes can exist in any part of a hierarchy of directories, but no same file can exist in multiple directories at once.
+Users in the web UI must be able to click through to add a note to a folder structure and be able to create new folders.
+Users should be able to search for partial directories like Folder4 or folder5 and get a list of all files under it or any of its subdirectories.
 
-* Ruby version
+Valid  note paths:
+- /Folder1/folder4/folder5/note4
+- /Folder1/folder3/note6
+- /note2
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+(But no same note can exist in multiple directories at once)
