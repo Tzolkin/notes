@@ -1,0 +1,55 @@
+.container
+  %h1 RunaNotes
+  %br
+  #flash
+
+  .row
+    .col-md-6
+      .row
+        .col-md-6
+          .form-group
+            %label.sr-only{for: "input-create"} Create Element:
+            %input#input-create.form-control{placeholder: "Element name", type: "input", value: ""}
+        %button#create-folder.btn.btn-success{type: "button"} Create Folder
+        %button#create-note.btn.btn-default{type: "button"} Create Note
+      %p.small If you do not select an item in the tree view, the element will be created at the root.
+
+      %hr
+      .row
+        .col-md-6
+          %h2 Search
+          / <form>
+          .form-group
+            %label.sr-only{for: "input-search"} Search Tree:
+            %input#input-search.form-control{placeholder: "Type to search...", type: "input", value: ""}/
+          .checkbox
+            %label
+              %input#chk-ignore-case.checkbox{type: "checkbox", value: "false"}/
+              Ignore Case
+          .checkbox
+            %label
+              %input#chk-exact-match.checkbox{type: "checkbox", value: "false"}/
+              Exact Match
+          .checkbox
+            %label
+              %input#chk-reveal-results.checkbox{type: "checkbox", value: "true", checked: 'checked'}/
+              Reveal Results
+          %button#btn-search.btn.btn-success{type: "button"} Search
+          %button#btn-clear-search.btn.btn-default{type: "button"} Clear
+
+      .row
+        %h2 Results
+        #search-output
+
+    .col-md-6
+      #tree
+
+- content_for :last_javascripts do
+  :javascript
+    $(function() {
+      $searchableTree = $('#tree').treeview({
+        levels: 1,
+        nodeIcon: "glyphicon glyphicon-folder-close",
+        data: #{ raw(@structure) }
+      });
+    });

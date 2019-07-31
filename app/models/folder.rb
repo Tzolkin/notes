@@ -3,15 +3,35 @@ class Folder < ApplicationRecord
   has_many :children, class_name: 'Folder'
   has_many :notes
 
-  def all_children_sql
-    Folder.find_by_sql(recursive_tree_children_sql)
+  scope :roots, -> { where(folder_id: nil) }
+
+  def self.structure
+    array = []
+    Folder.roots.each do |root|
+      array << root.data(root)
+    end
+    array.flatten
   end
 
-  def deep
-    result = deep_sql
-    return 0 if result.blank?
+  def data(child)
+    items = []
+    unless child.children.blank?
+      child.children.each do |emp|
+        items << data(emp)
+      end
+    end
+    if child.notes.present?
+      items << child.notes.map { |note| { text: note.name, icon: 'glyphicon glyphicon-file', folderid: note.folder.id } }
+    end
+    item = { text: child.name, folderid: child.id }
+    item[:nodes] = items.flatten if items.present?
 
-    result.first['max']
+    item
+  end
+
+  # TODO: Delete me
+  def all_children_sql
+    Folder.find_by_sql(recursive_tree_children_sql)
   end
 
   private
@@ -43,37 +63,5 @@ class Folder < ApplicationRecord
         ORDER BY level, folder_id, name;
       SQL
     sql.chomp
-  end
-
-  def deep_sql
-    columns = self.class.column_names
-    columns_joined = columns.join(',')
-    sql =
-      <<-SQL
-        WITH RECURSIVE folder_tree (#{columns_joined}, level)
-        AS (
-          SELECT
-            #{columns_joined},
-            0
-          FROM folders
-          WHERE id = #{id}
-
-          UNION ALL
-
-          SELECT
-            #{columns.map { |col| 'folders.' + col }.join(',')},
-            folder_tree.level + 1
-          FROM folders, folder_tree
-          WHERE folders.folder_id = folder_tree.id
-        )
-        SELECT  MAX(level)
-        FROM    folder_tree
-        WHERE   level > 0
-        Group By level
-        ORDER BY level DESC
-        Limit 1;
-      SQL
-    sql.chomp
-    ActiveRecord::Base.connection.execute(sql)
   end
 end
