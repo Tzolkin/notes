@@ -2,6 +2,13 @@
   'use strict';
   var $searchableTree;
 
+  function getUrlParameter(parameter) {
+    var url = new URL(window.location.href)
+    var query_string = url.search;
+    var search_params = new URLSearchParams(query_string);
+    return search_params.get(parameter);
+  }
+
   $(function() {
     var search = function(e) {
       var pattern = $('#input-search').val();
@@ -30,7 +37,7 @@
 
     var create_folder = function(e) {
       var folder_id = $('.node-selected:first').data('folderid');
-      folder_id = (folder_id == 0 || folder_id == undefined) ? null : folder_id;
+      folder_id = (folder_id == 0 || folder_id == undefined) ? getUrlParameter('id') : folder_id;
       var token = $('meta[name="csrf-token"]').attr('content');
 
       $.ajax({
@@ -66,7 +73,7 @@
 
     var create_note = function(e) {
       var folder_id = $('.node-selected:first').data('folderid');
-      folder_id = (folder_id == 0 || folder_id == undefined) ? null : folder_id;
+      folder_id = (folder_id == 0 || folder_id == undefined) ? getUrlParameter('id') : folder_id;
       var token = $('meta[name="csrf-token"]').attr('content');
 
       $.ajax({

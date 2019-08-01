@@ -1,9 +1,9 @@
 class Folder < ApplicationRecord
+  include Nestable
+
   belongs_to :parent, class_name: 'Folder', optional: true, foreign_key: :folder_id
   has_many :children, class_name: 'Folder'
   has_many :notes
-
-  scope :roots, -> { where(folder_id: nil) }
 
   def data(child)
     items = []
@@ -12,12 +12,11 @@ class Folder < ApplicationRecord
         items << data(emp)
       end
     end
-    if child.notes.present?
-      child.notes.map do |note|
-        items << note.data
-      end
+    child.notes.map do |note|
+      items << note.data
     end
-    item = { text: child.name, folderid: child.id }
+
+    item = { text: child.name, folderid: child.id, href: child.url_path }
     item[:nodes] = items.flatten if items.present?
 
     item

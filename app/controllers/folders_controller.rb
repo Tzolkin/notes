@@ -1,12 +1,14 @@
 class FoldersController < ApplicationController
   def create
-    Folder.create(folder_params)
-    @structure = Hierarchy.structure.to_json
+    folder = Folder.create(folder_params)
+    @structure = folder.parent.present? ? [folder.data(folder.parent)].to_json : Hierarchy.structure.to_json
 
     respond_to do |format|
       format.js { render json: @structure.as_json, status: :ok }
     end
   end
+
+  def show; end
 
   private
 

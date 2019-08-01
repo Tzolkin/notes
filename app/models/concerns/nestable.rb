@@ -7,12 +7,12 @@ module Nestable
 
   def url_path
     url = [name]
-    parent = folder
+    parent = self.class == Note ? folder : self.parent
     while parent.present?
       url << parent.name
       parent = parent.parent
     end
 
-    url.reverse.join('/').prepend('/')
+    url.reverse.join('/').prepend('/') + "?id=#{id}"
   end
 end
