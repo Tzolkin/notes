@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
   def main
-    @structure = Folder.structure.to_json
+    @structure = Hierarchy.structure.to_json
   end
 end

@@ -1,7 +1,7 @@
 class FoldersController < ApplicationController
   def create
     Folder.create(folder_params)
-    @structure = Folder.structure.to_json
+    @structure = Hierarchy.structure.to_json
 
     respond_to do |format|
       format.js { render json: @structure.as_json, status: :ok }

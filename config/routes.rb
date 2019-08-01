@@ -3,8 +3,9 @@ Rails.application.routes.draw do
 
   root to: 'home#main'
 
-  resource :folder, only: [:create]
+  resource :folder, only: %i(create)
   resource :note, only: [:create]
 
   get '*folders/:name', controller: 'notes', action: 'show'
+  get '/:name', controller: 'notes', action: 'show'
 end

@@ -5,14 +5,6 @@ class Folder < ApplicationRecord
 
   scope :roots, -> { where(folder_id: nil) }
 
-  def self.structure
-    array = []
-    Folder.roots.each do |root|
-      array << root.data(root)
-    end
-    array.flatten
-  end
-
   def data(child)
     items = []
     unless child.children.blank?
@@ -22,12 +14,7 @@ class Folder < ApplicationRecord
     end
     if child.notes.present?
       child.notes.map do |note|
-        items << {
-          text: note.name,
-          icon: 'glyphicon glyphicon-file',
-          folderid: note.folder.id,
-          href: note.url_path
-        }
+        items << note.data
       end
     end
     item = { text: child.name, folderid: child.id }
