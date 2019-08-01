@@ -21,4 +21,37 @@ class Folder < ApplicationRecord
 
     item
   end
+
+  def all_children_sql
+    Folder.find_by_sql(recursive_tree_children_sql)
+  end
+
+  private
+
+  def recursive_tree_children_sql
+    columns = self.class.column_names
+    columns_joined = columns.join(',')
+    sql =
+      <<-SQL
+        WITH RECURSIVE folder_tree (#{columns_joined}, level)
+        AS (
+          SELECT
+            #{columns_joined},
+            0
+          FROM folders
+          WHERE id = #{id}
+          UNION ALL
+          SELECT
+            #{columns.map { |col| 'folders.' + col }.join(',')},
+            folder_tree.level + 1
+          FROM folders, folder_tree
+          WHERE folders.folder_id = folder_tree.id
+        )
+        SELECT  *
+        FROM    folder_tree
+        WHERE   level > 0
+        ORDER BY level, folder_id, name;
+      SQL
+    sql.chomp
+  end
 end
