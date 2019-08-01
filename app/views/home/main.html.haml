@@ -49,6 +49,7 @@
     $(function() {
       $searchableTree = $('#tree').treeview({
         levels: 1,
+        enableLinks: true,
         nodeIcon: "glyphicon glyphicon-folder-close",
         data: #{ raw(@structure) }
       });

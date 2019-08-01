@@ -574,7 +574,7 @@
 			}
 
 			// Add text
-			if (_this.options.enableLinks) {
+			if (_this.options.enableLinks && node.href) {
 				// Add hyperlink
 				treeItem
 					.append($(_this.template.link)

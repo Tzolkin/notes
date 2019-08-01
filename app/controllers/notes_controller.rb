@@ -12,6 +12,18 @@ class NotesController < ApplicationController
     end
   end
 
+  def show
+    note = Note.find_by_name(params[:name])
+
+    respond_to do |format|
+      if note.present?
+        format.html
+      else
+        return not_found
+      end
+    end
+  end
+
   private
 
   def note_params

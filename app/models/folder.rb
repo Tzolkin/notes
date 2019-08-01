@@ -22,7 +22,12 @@ class Folder < ApplicationRecord
     end
     if child.notes.present?
       child.notes.map do |note|
-        items << { text: note.name, icon: 'glyphicon glyphicon-file', folderid: note.folder.id }
+        items << {
+          text: note.name,
+          icon: 'glyphicon glyphicon-file',
+          folderid: note.folder.id,
+          href: note.url_path
+        }
       end
     end
     item = { text: child.name, folderid: child.id }

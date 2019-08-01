@@ -5,4 +5,6 @@ Rails.application.routes.draw do
 
   resource :folder, only: [:create]
   resource :note, only: [:create]
+
+  get '*folders/:name', controller: 'notes', action: 'show'
 end
